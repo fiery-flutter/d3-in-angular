@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChartControlsService } from './chart-controls.service';
 
@@ -14,7 +14,7 @@ export interface IWindow extends Window {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'Using d3 within Angular 8';
+  title = 'D3 Angular chart';
   speechRecogitionState = false;
   flashMob = false;
 

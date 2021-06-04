@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { OrderStatusComponent } from './order-status.component';
 
@@ -8,7 +9,9 @@ describe('OrderStatusComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OrderStatusComponent ]
+      declarations: [ OrderStatusComponent ],
+      imports: [ RouterTestingModule, ],
+
     })
     .compileComponents();
   }));

@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 
 import { AreaChartComponent } from './../area-chart/area-chart.component';
 import { ChartControlsService } from '../chart-controls.service';
+import { getRandomInt } from '../utils/get-random-int';
 
 export class DeliveryMetric {
   state: string;
@@ -32,7 +33,7 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
 
   chartData = [];
 
-  refreshInterval;
+  refreshInterval: NodeJS.Timeout;
 
   deliveryMetrics: DeliveryMetric[];
 
@@ -73,15 +74,15 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
   generateData() {
     this.chartData = [];
     this.deliveryMetrics = [];
-    const meanPrepTime = randomInt(10, 11);
-    const meanWaitTime = randomInt(8, 9);
-    const meanTransitTime = randomInt(9, 10);
+    const meanPrepTime = getRandomInt(10, 11);
+    const meanWaitTime = getRandomInt(8, 9);
+    const meanTransitTime = getRandomInt(9, 10);
 
     const meanTotalTime = meanPrepTime + meanWaitTime + meanTransitTime;
 
-    const sigmaPrepTime = randomInt(1, 1);
-    const sigmaWaitTime = randomInt(2, 3);
-    const sigmaTransitTime = randomInt(1, 2);
+    const sigmaPrepTime = getRandomInt(1, 1);
+    const sigmaWaitTime = getRandomInt(2, 3);
+    const sigmaTransitTime = getRandomInt(1, 2);
 
     const sigmaTotalTime = Math.floor(
       Math.sqrt(Math.pow(sigmaPrepTime, 2) +
@@ -151,6 +152,3 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
   }
 }
 
-export function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}

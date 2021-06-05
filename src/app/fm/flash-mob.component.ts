@@ -7,6 +7,7 @@ import { AreaChartComponent } from './../area-chart/area-chart.component';
 import { ChartControlsService } from '../chart-controls.service';
 import { DeliveryMetric } from '../order-delivery/order-delivery.component';
 import { IWindow } from '../app.component';
+import { getRandomInt } from '../utils/get-random-int';
 
 @Component({
   selector: 'app-flash-mob',
@@ -96,7 +97,7 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
       mf = 200.0 / d3.mean(this.dataArray) ;
     }
 
-    const sigma = mf * randomInt(2, 2) ;
+    const sigma = mf * getRandomInt(2, 2) ;
     for( let i = 0; i < this.N;i++) {
       this.means[i] += this.drifts[i];
       const randomizer = d3.randomNormal(this.means[i], sigma);
@@ -116,9 +117,5 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
     // this.chartData.push(ttimes);
   }
 
-}
-
-export function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 

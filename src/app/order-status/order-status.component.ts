@@ -8,7 +8,7 @@ import { DonutChartComponent } from './../donut-chart/donut-chart.component';
 import * as HOBBITON from './hobbiton.json';
 import { ChartControlsService } from '../chart-controls.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-
+import { getRandomInt } from '../utils/get-random-int';
 export class OrderState {
   state: string;
   stateDisplayValue: string;
@@ -31,7 +31,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy, AfterContentInit
 
   displayedColumns = ['legend', 'orderStatus', 'total'];
 
-  refreshInterval;
+  refreshInterval: NodeJS.Timeout;
 
   constructor(private router: Router, public chartControlsService: ChartControlsService) { 
     this.chartControlsService.fullScreen = false;
@@ -72,7 +72,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy, AfterContentInit
       const target = new OrderState();
       target.state = state.state;
       target.stateDisplayValue = state.stateDisplayValue;
-      target.count = randomInt(0, 100);
+      target.count = getRandomInt(0, 100);
       this.orderStates.push(target);
     });
     this.chartData = [];
@@ -82,13 +82,13 @@ export class OrderStatusComponent implements OnInit, OnDestroy, AfterContentInit
   }
 
   updateStates() {
-    const increment = (val, plus, minus) => {
+    const increment = (val: number, plus: number, minus: number) => {
       return val + plus - minus;
     }
-    const newOrders = randomInt(0, 10);
-    const newReady = randomInt(0, Math.min(10, this.orderStates[0].count));
-    const newTransit = randomInt(0, Math.min(10, this.orderStates[1].count));
-    const newDelivered = randomInt(0, Math.min(10, this.orderStates[2].count));
+    const newOrders = getRandomInt(0, 10);
+    const newReady = getRandomInt(0, Math.min(10, this.orderStates[0].count));
+    const newTransit = getRandomInt(0, Math.min(10, this.orderStates[1].count));
+    const newDelivered = getRandomInt(0, Math.min(10, this.orderStates[2].count));
     this.orderStates[0].count = increment(this.orderStates[0].count, newOrders, newReady);
     this.orderStates[1].count = increment(this.orderStates[1].count, newReady, newTransit);
     this.orderStates[2].count = increment(this.orderStates[2].count, newTransit, newDelivered);
@@ -110,8 +110,4 @@ export class OrderStatusComponent implements OnInit, OnDestroy, AfterContentInit
   toggleData(event: MatSlideToggleChange) {
     this.chartControlsService.showData = event.checked;
   }
-}
-
-export function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

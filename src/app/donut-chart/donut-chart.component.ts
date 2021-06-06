@@ -201,9 +201,6 @@ export class DonutChartComponent implements OnInit, OnChanges {
       .attrTween("transform", this.labelTween);
   }
 
-  private updateTotal() {
-    this.totalLabel.text(this.total);
-  }
 
   private removeExistingChartFromParent() {
     // !!!!Caution!!!

@@ -92,6 +92,7 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
       }
     }, 160 * this.transitionTime);
   }
+
   generateData() {
     this.chartData = [];
     let mf = 1.0;
@@ -105,7 +106,7 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
       this.means[i] += this.drifts[i];
       const randomizer = d3.randomNormal(this.means[i], sigma);
       const times = [];
-      for (let i = 0; i < 1000; i++) {
+      for (let j = 0; j < 1000; j++) {
         times.push(Math.floor(randomizer()));
       }
       this.chartData.push(times);

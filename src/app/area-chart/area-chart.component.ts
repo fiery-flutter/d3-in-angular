@@ -10,6 +10,15 @@ import {
 
 import * as d3 from "d3";
 
+type SomeChartSVGSelection = d3.Selection<
+  SVGSVGElement,
+  unknown,
+  null,
+  undefined
+>;
+
+type GSelection = d3.Selection<SVGGElement, unknown, null, undefined>;
+
 @Component({
   selector: "app-area-chart",
   encapsulation: ViewEncapsulation.None,
@@ -23,17 +32,21 @@ export class AreaChartComponent implements OnInit, OnChanges {
   @Input() hticks = 60;
   @Input() data: number[];
   @Input() showLabel = 1;
-  hostElement; // Native element hosting the SVG container
-  svg; // Top level SVG element
-  g; // SVG Group element
-  colorScale; // D3 color provider
-  x; // X-axis graphical coordinates
-  y; // Y-axis graphical coordinates
+  hostElement: any; // Native element hosting the SVG container
+  svg: SomeChartSVGSelection; // Top level SVG element
+  g: GSelection;
+  colorScale: d3.ScaleOrdinal<string, string>; // D3 color provider
+  /**
+   * ! Unclear where this typing is from. thresholds(this.x.ticks))
+   * 
+   */
+  x: d3.AxisScale<d3.AxisDomain> | d3.ScaleLinear<number, number> | any; // X-axis graphical coordinates d3.ScaleLinear<number, number> |
+  y: d3.AxisScale<d3.AxisDomain>; // Y-axis graphical coordinates d3.ScaleLinear<number, number> |
   colors = d3.scaleOrdinal(d3.schemeCategory10);
-  bins; // Array of frequency distributions - one for each area chaer
-  paths; // Path elements for each area chart
-  area; // For D3 area function
-  histogram; // For D3 histogram function
+  bins: any[]; // Array of frequency distributions - one for each area chaer
+  paths: any[]; // Path elements for each area chart
+  area: d3.Area<[number, number]>; // For D3 area function
+  histogram: d3.HistogramGeneratorNumber<number, number>; // For D3 histogram function
 
   constructor(private elRef: ElementRef) {
     this.hostElement = this.elRef.nativeElement;
@@ -79,9 +92,9 @@ export class AreaChartComponent implements OnInit, OnChanges {
     this.createAreaCharts();
   }
 
-  private processData(data) {
+  private processData(data: any[]) {
     this.bins = [];
-    data.forEach((row) => {
+    data.forEach((row: any) => {
       this.bins.push(this.histogram(row));
     });
   }
@@ -160,7 +173,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
   }
   private createAreaCharts() {
     this.paths = [];
-    this.bins.forEach((row, index) => {
+    this.bins.forEach((row: any, index: number) => {
       this.paths.push(
         this.g
           .append("path")
@@ -185,7 +198,10 @@ export class AreaChartComponent implements OnInit, OnChanges {
   }
 
   private updateAreaCharts() {
-    this.paths.forEach((path, index) => {
+    this.paths.forEach((
+      path: SomeChartSVGSelection /* ? */,
+      index: string | number
+    ) => {
       path
         .datum(this.bins[index])
         .transition()

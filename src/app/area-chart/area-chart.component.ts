@@ -38,7 +38,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
   colorScale: d3.ScaleOrdinal<string, string>; // D3 color provider
   /**
    * ! Unclear where this typing is from. thresholds(this.x.ticks))
-   * 
+   *
    */
   x: d3.AxisScale<d3.AxisDomain> | d3.ScaleLinear<number, number> | any; // X-axis graphical coordinates d3.ScaleLinear<number, number> |
   y: d3.AxisScale<d3.AxisDomain>; // Y-axis graphical coordinates d3.ScaleLinear<number, number> |
@@ -80,11 +80,17 @@ export class AreaChartComponent implements OnInit, OnChanges {
       .y0(this.y(0))
       .y1((datum: any) => this.y(datum.length));
 
+    type SomeTickyTypeUndocumented = {
+      ticks: (count: number) => number;
+    };
+
+    const ticky: SomeTickyTypeUndocumented = this.x;
+
     this.histogram = d3
       .histogram()
       .value((datum) => datum)
       .domain([0, this.xmax])
-      .thresholds(this.x.ticks(this.hticks));
+      .thresholds(ticky.ticks(this.hticks));
 
     // data has to be processed after area and histogram functions are defined
     this.processData(data);

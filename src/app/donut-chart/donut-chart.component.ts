@@ -26,21 +26,29 @@ export class DonutChartComponent implements OnInit, OnChanges {
   @Input() data: number[];
   hostElement: any; // Native element hosting the SVG container
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>; // Top level SVG element
-  g;
+  g: d3.Selection<SVGGElement, unknown, null, undefined>;
   arc: d3.Arc<any, d3.DefaultArcObject>; // D3 Arc generator
   innerRadius: number; // Inner radius of donut chart
   radius: number; // Outer radius of donut chart
-  slices: { data: (arg0: any) => any; transition: () => { (): any; new(): any; duration: { (arg0: number): { (): any; new(): any; attrTween: { (arg0: string, arg1: (datum: any, index: any) => (t: any) => any): void; new(): any; }; }; new(): any; }; }; }; // Donut chart slice elements
-  labels: { data: (arg0: any) => void; each: (arg0: (datum: any, index: any, n: any) => void) => void; transition: () => { (): any; new(): any; duration: { (arg0: number): { (): any; new(): any; attrTween: { (arg0: string, arg1: (datum: any, index: any) => (t: any) => string): void; new(): any; }; }; new(): any; }; }; }; // SVG data label elements
-  totalLabel: { text: (arg0: number) => void; }; // SVG label for total
+  slices: d3.Selection<SVGPathElement, unknown, SVGGElement, unknown>; // Donut chart slice elements
+  labels: d3.Selection<SVGTextElement, unknown, SVGGElement, unknown>; // SVG data label elements
+  totalLabel: { text: (arg0: number) => void }; // SVG label for total
   rawData: any[]; // Raw chart values array
   total: number; // Total of chart values
   colorScale: d3.ScaleOrdinal<string, string>; // D3 color provider
-  pieData: any; // Arc segment parameters for current data set
-  pieDataPrevious: any; // Arc segment parameters for previous data set - used for transitions
+  pieData: unknown[]; // Arc segment parameters for current data set
+  pieDataPrevious: any[]; // Arc segment parameters for previous data set - used for transitions
   colors = d3.scaleOrdinal(d3.schemeCategory10);
 
-  // Pie function - transforms raw data to arc segment parameters
+  /**
+   * 
+   * Note that D3 Pie typings reflect the assumption that the value is either a  
+   *   - i. a number or
+   *   - ii. an object with value accessor .valueOf() which returns a number.
+   * 
+   * 
+   * Pie function - transforms raw data to arc segment parameters
+   */
   pie = d3
     .pie()
     .startAngle(-0.5 * Math.PI)
@@ -101,7 +109,7 @@ export class DonutChartComponent implements OnInit, OnChanges {
     // this.colorScale = d3.scaleOrdinal().domain(["0","1","2","3"]).range(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']);
   }
 
-  private processPieData(data: (number)[], initial = true) {
+  private processPieData(data: number[], initial = true) {
     this.rawData = data;
     this.total = this.rawData.reduce((sum: any, next: any) => sum + next, 0);
 
@@ -184,7 +192,7 @@ export class DonutChartComponent implements OnInit, OnChanges {
   private updateLabels() {
     this.totalLabel.text(this.total);
     this.labels.data(this.pieData);
-    this.labels.each((datum: any, index: number, n: { [x: string]: any; }) => {
+    this.labels.each((datum: any, index: number, n: { [x: string]: any }) => {
       d3.select(n[index]).text(this.labelValueFn(this.rawData[index]));
     });
     this.labels

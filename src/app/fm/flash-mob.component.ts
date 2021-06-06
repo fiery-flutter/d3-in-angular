@@ -28,12 +28,13 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
   chartData = [];
 
   transitionTime = 200;
-  refreshInterval;
-  driftInterval;
+  refreshInterval: NodeJS.Timeout;
+  driftInterval: NodeJS.Timeout;
 
-  audioContext;
-  analyzer;
-  dataArray;
+  audioContext: any;
+  analyzer: AnalyserNode;
+  dataArray: Uint8Array;
+  a : d3.Numeric
 
   N = 5;
   means = [15, 30, 45, 60, 75];

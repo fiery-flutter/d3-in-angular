@@ -16,6 +16,7 @@ import { DonutChartComponent } from './donut-chart/donut-chart.component';
 import { OrderDeliveryComponent } from './order-delivery/order-delivery.component';
 import { AreaChartComponent } from './area-chart/area-chart.component';
 import { FlashMobComponent } from './fm/flash-mob.component';
+import { DiagramComponent } from './diagram/diagram.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { FlashMobComponent } from './fm/flash-mob.component';
     DonutChartComponent,
     OrderDeliveryComponent,
     AreaChartComponent,
-    FlashMobComponent
+    FlashMobComponent,
+    DiagramComponent
   ],
   imports: [
     BrowserModule,

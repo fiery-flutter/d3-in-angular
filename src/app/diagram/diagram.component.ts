@@ -19,6 +19,12 @@ import * as d3 from 'd3';
  */
 type BaseSvgChartSelection = d3.Selection<SVGSVGElement, number, null, undefined>;
 
+
+type ChartSize = {
+  width: number;
+  height: number;
+};
+
 @Component({
   selector: 'app-diagram',
   templateUrl: './diagram.component.html',
@@ -59,12 +65,42 @@ export class DiagramComponent implements OnInit, AfterContentInit, AfterViewInit
   }
 
   ngAfterViewInit(): void {
+
+    const viewBoxSize: ChartSize = {
+      width: 200,
+      height: 100
+    }
+
     const hostElement = this.chartElement.nativeElement;
     this.hostElement = hostElement;
 
-    const chart = setSvgChartDimensions(hostElement) as BaseSvgChartSelection;
+    const chart = setSvgChartDimensions(hostElement, viewBoxSize) as BaseSvgChartSelection;
     this.svgChart = chart;
-    addBaseGElement(chart);
+
+    const g = addBaseGElement(chart);
+
+    const margin = { left: 10, top: 10, right: 10, bottom: 20 }
+
+    const xScale = d3.scaleLinear()
+      .domain([0, 50])
+      .range(
+        [
+          margin.left,
+          viewBoxSize.width - margin.right
+        ]
+      )
+      ;
+
+    chart
+      .selectAll('circle') // Select all appears to be mandatory. Otherwise ownerDocument null on selection enter() node stacktrace.
+      .data([0, 10, 20, 30, 40, 50,])
+      .enter() // Should read D3 docs for context. This opaque selection join syntax...
+      .append('circle')
+      .attr('cx', xScale)
+      .attr('cy', 20)
+      .attr('r', 5)
+      .attr('fill', 'purple')
+      ;
   }
 
 }
@@ -73,8 +109,14 @@ function createChart() {
 
 }
 
-function setSvgChartDimensions(element: HTMLElement = this.hostElement) {
-  const viewBox = { width: 200, height: 100 };
+
+function setSvgChartDimensions(
+  element: HTMLElement = this.hostElement,
+  viewBox: ChartSize = {
+    width: 200,
+    height: 100
+  }
+): d3.Selection<SVGSVGElement, unknown, null, undefined> {
 
   // Arbitrary variable declaration as we directly mutate DOM anyway
   const chart: d3.Selection<SVGSVGElement, unknown, null, undefined> = d3.select(element)

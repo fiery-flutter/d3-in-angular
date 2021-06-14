@@ -11,7 +11,7 @@ const mockDiagram: ConceptualErd = {
     entities: [
         {
             type: "Entity",
-            id: "11wononeracehorse",
+            id: "11onewononeracehorsedrug",
 
             name: "Drug",
             /// Could use a map type for efficient index evaluation?
@@ -23,6 +23,7 @@ const mockDiagram: ConceptualErd = {
                     isOptional: false,
                     isPartOfPrimaryKey: false,
                     isUnique: false,
+                    isDerivedCalculated: false,
                     x: 1,
                     y: 1,
                 },
@@ -32,7 +33,7 @@ const mockDiagram: ConceptualErd = {
         },
         {
             type: "Entity",
-            id: "22twowononetoo",
+            id: "22twowononetooitem",
 
             name: "Item",
             /// Could use a map type for efficient index evaluation?
@@ -44,6 +45,7 @@ const mockDiagram: ConceptualErd = {
                     isOptional: false,
                     isPartOfPrimaryKey: false,
                     isUnique: false,
+                    isDerivedCalculated: false,
                     x: 1,
                     y: 1,
                 },
@@ -55,9 +57,26 @@ const mockDiagram: ConceptualErd = {
     relationships: [
         {
             type: "Relationship",
-            firstEntityID: "11wononeracehose",
-            secondEntityID: "22wononetoo",
+            // Entity names are guaranteed unique anyway...
+            // Should not have name clashes for entities or table names in a database or model...
+            firstEntityID: "11onewononeracehorsedrug",
+            secondEntityID: "22twowononetooitem",
             relationshipName: "is quantified as",
+            firstLinkCardinality: "one",
+
+            // Evaluation of participation relates to when read from the other entity to this one
+            // i.e. For the second entity, can the first entity be optional unlinked?
+            // Depending on order of events
+            // Drug is not required for an item (item can be other components)
+            firstLinkParticipation: "optional",
+            firstLinkisWeak: false,
+
+            // Formally speaking, drug can be related to multiple items through the ingredient model
+            // That we do not represent here
+            secondLinkCardinality: "many",
+            secondLinkParticipation: "optional",
+            secondLinkIsWeak: false,
+
             x: 1,
             y: 1,
         },

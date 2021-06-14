@@ -4,7 +4,7 @@
  *
  * @see {isDiagram} ts-auto-guard:type-guard
  */
- export interface Diagram {
+export interface Diagram {
     type: "Diagram";
     /**
      *
@@ -68,6 +68,53 @@ export enum ERDiagramType {
     physical = "physical",
 }
 
+/**
+ * Not much more value to enforce specific numbers..
+ * 
+ * Design-wise.
+ * 
+ * Embedded contextual information is good, though, rather than allowing people to 
+ * place free-text labels everywhere
+ */
+export type CardinalityType =
+
+    // Optional - Crows-foot notation
+    // "zero" |
+    // Mandatory - Crows-foot notation
+    "one" |
+    // Mandatory - Crows-foot notation
+    "many";
+
+// export interface Cardinality {
+//     /**
+//      * Minimum must be zero or one
+//      * zero = optional
+//      * one = mandatory
+//      */
+//     min: Omit<CardinalityType, "many">;
+//     /** Maximum must be one or many */
+//     max: CardinalityType
+// }
+
+/**
+ * 
+ * * i.e. A to B 0..1 is optional
+ * * i.e. A to B 1..1 is mandatory or 1..N
+ * * A to B 1:N is mandatory 
+ * 
+ * 
+ */
+export type Participation = "optional" | "mandatory";
+
+export interface Shape {
+
+    // Some predefined styling?
+    // Or go directly to SCSS classes
+    // or canvas
+
+    // i.e. Colour = red for any entity that is not currently linked
+}
+
 // Try from a Relationship-first design view rather than a diagramming-first shapes linking viewpoint
 // Automate positioning as much as possible
 // Though likely lose stability between updates i.e. if first entity is in top left
@@ -95,7 +142,64 @@ export interface Relationship extends ChartPositionedShape {
     relationshipName: string;
     firstEntityID: string;
     secondEntityID: string;
+
+    firstLinkParticipation: Participation
+    firstLinkCardinality: CardinalityType;
+
+    /**
+     * May be redundant to break out the config details into the connectors?
+     * 
+     * Identifying relationship side for the double line mandatory only when
+     * the other side is a weak entity
+     * 
+     * Hard to absolutely model like this without some logical enforcement
+     * 
+     */
+    /* firstLinkIsStrongIdentifying: boolean; */
+    /**
+     * Only one out of the binary links can be weak
+     * and the other must be strong identifying by deduction.
+     * 
+     * First entity existence is dependent entirely on the other entity 
+     * i.e. it would need to draw its primary key from the strong entity
+     * 
+     * 
+     * This would make the second link a double line and the diamond a double line
+     */
+    firstLinkisWeak: boolean;
+
+    secondLinkParticipation: Participation;
+
+    secondLinkCardinality: CardinalityType;
+
+    /**
+     * Redundancy duplication poor data model
+     * 
+     * identifying/weak we restrict to only make sense in a binary relationship...
+     */
+    /* secondLinkIsStrongIdentifying: boolean; */
+    /**
+     * Only one can be weak
+     * 
+     * Could alternately standardise a convention that:
+     * if first link is weak = false then second link is weak
+     * if first link is weak = true then second link is strong
+     * if first link is null or missing then it is a regular link
+     * 
+     * 
+     * In the current form, both need to be specified.
+     */
+    secondLinkIsWeak: boolean;
+
+
+
+
+
+
+
 }
+
+
 
 /**
  * Simplified MVP model
@@ -111,6 +215,8 @@ export interface TernaryRelationship extends Omit<Relationship, "type"> {
     type: "TernaryRelationship";
 
     thirdEntityID: string;
+
+    thirdLinkIsIdentifying: boolean;
 }
 
 /**
@@ -145,12 +251,29 @@ export interface Attribute extends ChartPositionedShape {
 
     attributeName: string;
 
+    /**
+     * should really assume at the conceptual level 3NF style
+     * 
+     * If it is unique and normalised,
+     * then the unique part should be the only unique part?
+     * 
+     * think about the theory candidate functional superset of itself
+     * 
+     * 
+     * This probably does not belong in the conceptual ERD attribute model
+     */
     isPartOfPrimaryKey: boolean;
 
     isOptional: boolean;
 
     isUnique: boolean;
 
+    /**
+     * Affects presentation and does not exist in the logical or physical layers
+     * 
+     * 
+     */
+    isDerivedCalculated: boolean;
     /**
      * No types until physical or maybe logical model relational schema
      */

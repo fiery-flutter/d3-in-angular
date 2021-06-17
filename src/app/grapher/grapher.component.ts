@@ -10,8 +10,8 @@ interface ForceFlowDatum {
     x: number;
     y: number;
   };
-  left?: any;
-  right?: any;
+  left: boolean;
+  right: boolean;
 }
 interface CircleReflexiveDatum extends d3.SubjectPosition {
   id: number;
@@ -47,6 +47,7 @@ function setupGraph(baseSvg: SVGElement) {
 
   const svg: d3.Selection<SVGElement, unknown, null, undefined> = d3
     .select(baseSvg)
+    .append("svg")
     .on("contextmenu", () => {
       d3.event.preventDefault();
     })
@@ -57,11 +58,12 @@ function setupGraph(baseSvg: SVGElement) {
   //  - nodes are known by 'id', not by index in array.
   //  - reflexive edges are indicated on the node (as a bold black circle).
   //  - links are always source < target; edge directions are set by 'left' and 'right'.
-  const nodes = [
+  const nodes: CircleReflexiveDatum[] = [
     { id: 0, reflexive: false, x: 100, y: 100 },
     { id: 1, reflexive: true, x: 150, y: 50 },
     { id: 2, reflexive: false, x: 200, y: 100 },
   ];
+
   let lastNodeId = 2;
   const links = [
     { source: nodes[0], target: nodes[1], left: false, right: true },

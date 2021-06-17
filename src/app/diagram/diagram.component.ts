@@ -118,8 +118,6 @@ export class DiagramComponent
       .attr("width", rectSize * 1.6)
       .attr("height", rectSize);
   }
-
-
 }
 function createChart() {}
 
@@ -146,6 +144,7 @@ function addBaseGElement(
 }
 
 function dragCircle(event: CircleDragEvent) {
+  const { x, y } = event;
   d3.drag().on("drag", dragCircle);
   // event.;
   // const [(x, y)] = d3.pointer(event, svg.node());
@@ -172,14 +171,11 @@ function contains(rect, point) {
 }
 
 function setRectDropTargetStyle(
-
   rect: RectangleSelection,
   isDraggedOver: boolean
 ) {
   rect.classed("dropTarget", isDraggedOver);
-
 }
-
 
 // function endDragging(event) {
 //   const isDragging = false;

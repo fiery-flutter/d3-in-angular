@@ -17,6 +17,7 @@ import { OrderDeliveryComponent } from './order-delivery/order-delivery.componen
 import { AreaChartComponent } from './area-chart/area-chart.component';
 import { FlashMobComponent } from './fm/flash-mob.component';
 import { DiagramComponent } from './diagram/diagram.component';
+import { GrapherComponent } from './grapher/grapher.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { DiagramComponent } from './diagram/diagram.component';
     OrderDeliveryComponent,
     AreaChartComponent,
     FlashMobComponent,
-    DiagramComponent
+    DiagramComponent,
+    GrapherComponent
   ],
   imports: [
     BrowserModule,

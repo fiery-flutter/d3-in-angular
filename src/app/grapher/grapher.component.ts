@@ -23,7 +23,6 @@ const goldenRatio = 1.618;
 class EntityRectangle {
   static readonly width: 161.8 = 161.8;
   static readonly height: 100 = 100;
-
 }
 
 @Component({
@@ -36,7 +35,9 @@ export class GrapherComponent implements OnInit {
   graphElementRef!: ElementRef;
   graphElement!: SVGElement;
 
-  constructor() { }
+  constructor() {
+    //
+  }
 
   ngOnInit(): void {
     this.graphElement = this.graphElementRef.nativeElement;
@@ -47,6 +48,19 @@ export class GrapherComponent implements OnInit {
 
 function setupGraph(baseSvg: SVGElement) {
   // set up SVG for D3
+  // Draw using graph provider
+
+
+  drawD3Chart(baseSvg);
+  // drawGraphviz(baseSvg);
+}
+
+function drawGraphviz(baseSvg: SVGElement) {
+  // graphviz("svg").renderDot("digraph {a -> b}");
+  // d3.select(baseSvg).graphviz().renderDot("digraph {a -> b}");
+}
+
+function drawD3Chart(baseSvg: SVGElement) {
   const width = 600;
   const height = 300;
   const colors: d3.ScaleOrdinal<string | number, string> = d3.scaleOrdinal(
@@ -78,15 +92,12 @@ function setupGraph(baseSvg: SVGElement) {
     { source: nodes[1], target: nodes[2], left: false, right: true },
   ];
 
-
   const gGroup = d3.select(baseSvg).append("g");
 
   const rectWidth = EntityRectangle.width;
   const rectHeight = EntityRectangle.height;
-  const customised: d3.Selection<SVGRectElement, any, null, undefined>
-    = gGroup.append("rect")
-      .attr("width", rectWidth)
-      .attr("height", rectHeight)
-    ;
-
+  const customised: d3.Selection<SVGRectElement, any, null, undefined> = gGroup
+    .append("rect")
+    .attr("width", rectWidth)
+    .attr("height", rectHeight);
 }

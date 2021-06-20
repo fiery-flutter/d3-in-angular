@@ -145,19 +145,7 @@ function drawD3ForceDirected() {
   ];
 
   // init D3 force layout
-  const force = d3
-    .forceSimulation()
-    .force(
-      "link",
-      d3
-        .forceLink()
-        .id((d: any) => d.id)
-        .distance(150)
-    )
-    .force("charge", d3.forceManyBody().strength(-500))
-    .force("x", d3.forceX(width / 2))
-    .force("y", d3.forceY(height / 2))
-    .on("tick", tick);
+  const force = createForceSimulation(width, height, tick);
 
   // init D3 drag support
   const drag = d3
@@ -541,3 +529,37 @@ function drawD3ForceDirected() {
   d3.select(window).on("keydown", keydown).on("keyup", keyup);
   restart();
 }
+function createForceSimulation(
+  width: number,
+  height: number,
+  tick: () => void
+) {
+  const forceDistance = 150;
+
+  /**
+   * Mutate this
+   */
+  const newSimulation: d3.Simulation<d3.SimulationNodeDatum, undefined>
+    = d3.forceSimulation();
+
+  /** 
+   * Same reference to the now-mutated object 
+   */
+  const customisedSimulation = newSimulation
+    .force(
+      "link",
+      d3
+        .forceLink()
+        .id((d: any) => d.id)
+        .distance(forceDistance)
+    )
+    .force("charge", d3.forceManyBody().strength(-500))
+    .force("x", d3.forceX(width / 2))
+    .force("y", d3.forceY(height / 2))
+    .on("tick", tick);
+
+
+
+  return customisedSimulation;
+}
+

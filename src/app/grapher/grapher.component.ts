@@ -222,23 +222,7 @@ function drawD3ForceDirected() {
   // update force layout (called automatically each iteration)
   function tick() {
     // draw directed edges with proper padding from node centers
-    path.attr("d", (d: any) => {
-      const deltaX = d.target.x - d.source.x;
-      const deltaY = d.target.y - d.source.y;
-      const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-      const normX = deltaX / dist;
-      const normY = deltaY / dist;
-      const sourcePadding = d.left ? 17 : 12;
-      const targetPadding = d.right ? 17 : 12;
-      const sourceX = d.source.x + sourcePadding * normX;
-      const sourceY = d.source.y + sourcePadding * normY;
-      const targetX = d.target.x - targetPadding * normX;
-      const targetY = d.target.y - targetPadding * normY;
-
-      return `M${sourceX},${sourceY}L${targetX},${targetY}`;
-    });
-
-    circle.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
+    updateSetMutateForceLayoutDoTickNodeEdgesPositioned(path, circle);
   }
 
   // update graph (called when needed)
@@ -414,8 +398,7 @@ function drawD3ForceDirected() {
     // update drag line
     dragLine.attr(
       "d",
-      `M${mousedownNode.x},${mousedownNode.y}L${d3.mouse(this)[0]},${
-        d3.mouse(this)[1]
+      `M${mousedownNode.x},${mousedownNode.y}L${d3.mouse(this)[0]},${d3.mouse(this)[1]
       }`
     );
   }
@@ -521,6 +504,47 @@ function drawD3ForceDirected() {
   d3.select(window).on("keydown", keydown).on("keyup", keyup);
   restart();
 }
+
+
+function updateSetMutateForceLayoutDoTickNodeEdgesPositioned(
+  path: d3.Selection<d3.BaseType, unknown, d3.BaseType, unknown>,
+  circle: d3.Selection<d3.BaseType, unknown, d3.BaseType, unknown>
+) {
+  path.attr("d", (d: ForceFlowDatum) => {
+    const deltaX = d.target.x - d.source.x;
+    const deltaY = d.target.y - d.source.y;
+    const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    const normX = deltaX / dist;
+    const normY = deltaY / dist;
+
+    // This arbitrary UX pads manually pads out how far away the end of the arrow 
+    // the end of the arrow is to the circle outline
+    // i.e. A -->    B vs A -->B
+    const paddedPaddingWhereExtraPresentTargetRight = 17; /** Refactor this to be 12 + 5 in var terms later. Incremental refactor */
+    const nonPaddedPadding = 12;
+
+    const sourcePadding = d.left ? paddedPaddingWhereExtraPresentTargetRight : nonPaddedPadding;
+    const targetPadding = d.right ? paddedPaddingWhereExtraPresentTargetRight : nonPaddedPadding;
+    const sourceX = d.source.x + sourcePadding * normX;
+    const sourceY = d.source.y + sourcePadding * normY;
+    const targetX = d.target.x - targetPadding * normX;
+    const targetY = d.target.y - targetPadding * normY;
+
+    return `M${sourceX},${sourceY}L${targetX},${targetY}`;
+  });
+
+  /**
+   * Circle position translation too?!
+   *
+   * Seems ridiculously redundant
+   *
+   * Padding positioning BOTH the arrow and the node and the distance of the arrow from node
+   *
+   * when should really only need to adjust one or the other.
+   */
+  circle.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
+}
+
 function createForceSimulation(
   width: number,
   height: number,

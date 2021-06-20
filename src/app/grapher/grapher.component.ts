@@ -235,7 +235,7 @@ function drawD3ForceDirected() {
       const targetX = d.target.x - targetPadding * normX;
       const targetY = d.target.y - targetPadding * normY;
 
-      return `M${sourceX},${sourceY}` + `L${targetX},${targetY}`;
+      return `M${sourceX},${sourceY}L${targetX},${targetY}`;
     });
 
     circle.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
@@ -328,7 +328,7 @@ function drawD3ForceDirected() {
           .classed("hidden", false)
           .attr(
             "d",
-            `M${mousedownNode.x},${mousedownNode.y}` + `L${mousedownNode.x},${mousedownNode.y}`
+            `M${mousedownNode.x},${mousedownNode.y}L${mousedownNode.x},${mousedownNode.y}`
           );
 
         restart();
@@ -355,10 +355,9 @@ function drawD3ForceDirected() {
         const source = isRight ? mousedownNode : mouseupNode;
         const target = isRight ? mouseupNode : mousedownNode;
 
-        const link = links.find(
+        const link = links.filter(
           (l) => l.source === source && l.target === target
-        );
-
+        )[0];
         if (link) {
           link[isRight ? "right" : "left"] = true;
         } else {
@@ -415,8 +414,9 @@ function drawD3ForceDirected() {
     // update drag line
     dragLine.attr(
       "d",
-      `M${mousedownNode.x},` + `${mousedownNode.y}` +
-      `L${d3.mouse(this)[0]},` + `${d3.mouse(this)[1]}`
+      `M${mousedownNode.x},${mousedownNode.y}L${d3.mouse(this)[0]},${
+        d3.mouse(this)[1]
+      }`
     );
   }
 
@@ -443,19 +443,13 @@ function drawD3ForceDirected() {
   }
 
   // only respond once per keydown
-  // Is this due to this being run on each tick? 
-  // i.e. 60 frames = 60 ticks per second if you hold a key down for a second
-  // !isKeyAlreadyDown
-  let isNewKey: boolean = false;
+  let lastKeyDown = -1;
 
   function keydown() {
     d3.event.preventDefault();
 
-    if (!isNewKey) {
-      return;
-    }
-
-    const keyCode = d3.event.keyCode;
+    if (lastKeyDown !== -1) return;
+    lastKeyDown = d3.event.keyCode;
 
     // ctrl
     if (d3.event.keyCode === 17) {
@@ -464,9 +458,7 @@ function drawD3ForceDirected() {
       return;
     }
 
-    if (!selectedNode && !selectedLink) {
-      return;
-    }
+    if (!selectedNode && !selectedLink) return;
 
     switch (d3.event.keyCode) {
       case 8: // backspace
@@ -512,7 +504,7 @@ function drawD3ForceDirected() {
   }
 
   function keyup() {
-    isNewKey = false;
+    lastKeyDown = -1;
 
     // ctrl
     if (d3.event.keyCode === 17) {

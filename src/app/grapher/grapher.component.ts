@@ -170,31 +170,7 @@ function drawD3ForceDirected() {
     });
 
   // define arrow markers for graph links
-  svg
-    .append("svg:defs")
-    .append("svg:marker")
-    .attr("id", "end-arrow")
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 6)
-    .attr("markerWidth", 3)
-    .attr("markerHeight", 3)
-    .attr("orient", "auto")
-    .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5")
-    .attr("fill", "#000");
-
-  svg
-    .append("svg:defs")
-    .append("svg:marker")
-    .attr("id", "start-arrow")
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 4)
-    .attr("markerWidth", 3)
-    .attr("markerHeight", 3)
-    .attr("orient", "auto")
-    .append("svg:path")
-    .attr("d", "M10,-5L0,0L10,5")
-    .attr("fill", "#000");
+  defineReferenceableStyleArrowMarkersStartEnd(svg);
 
   // line displayed when dragging new nodes
   const dragLine = svg
@@ -505,6 +481,53 @@ function drawD3ForceDirected() {
   restart();
 }
 
+
+/**
+ * Reference using `url(#end-arrow)` and `url(#start-arrow)`
+ * 
+ * 
+ * define arrow markers for graph links
+ * @param svg the base svg selection iewbox we are charting everything on
+ */
+function defineReferenceableStyleArrowMarkersStartEnd(
+  svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
+) {
+  // end arrow
+  appendThing(svg, "end-arrow");
+
+  // start arrow
+  svg
+    .append("svg:defs")
+    .append("svg:marker")
+    .attr("id", "start-arrow")
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 4)
+    .attr("markerWidth", 3)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+    .append("svg:path")
+    .attr("d", "M10,-5L0,0L10,5")
+    .attr("fill", "#000");
+}
+
+function appendThing(
+  svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>,
+  idStyleRef: "end-arrow" | "start-arrow"
+) {
+  svg
+    .append("svg:defs")
+    .append("svg:marker")
+    .attr("id", idStyleRef)
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 6)
+    .attr("markerWidth", 3)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+    .append("svg:path")
+    // The two angular points that are lined to become an arrow > or <
+    .attr("d", "M0,-5L10,0L0,5")
+    .attr("fill", "#000");
+}
 
 function updateSetMutateForceLayoutDoTickNodeEdgesPositioned(
   path: d3.Selection<d3.BaseType, unknown, d3.BaseType, unknown>,

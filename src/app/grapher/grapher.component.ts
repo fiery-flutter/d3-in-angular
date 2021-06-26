@@ -484,8 +484,8 @@ function drawD3ForceDirected() {
 
 /**
  * Reference using `url(#end-arrow)` and `url(#start-arrow)`
- * 
- * 
+ *
+ *
  * define arrow markers for graph links
  * @param svg the base svg selection iewbox we are charting everything on
  */
@@ -540,7 +540,7 @@ function updateSetMutateForceLayoutDoTickNodeEdgesPositioned(
     const normX = deltaX / dist;
     const normY = deltaY / dist;
 
-    // This arbitrary UX pads manually pads out how far away the end of the arrow 
+    // This arbitrary UX pads manually pads out how far away the end of the arrow
     // the end of the arrow is to the circle outline
     // i.e. A -->    B vs A -->B
     const paddedPaddingWhereExtraPresentTargetRight = 17; /** Refactor this to be 12 + 5 in var terms later. Incremental refactor */
@@ -581,8 +581,8 @@ function createForceSimulation(
   const newSimulation: d3.Simulation<d3.SimulationNodeDatum, undefined>
     = d3.forceSimulation();
 
-  /** 
-   * Same reference to the now-mutated object 
+  /**
+   * Same reference to the now-mutated object
    */
   const customisedSimulation = newSimulation
     .force(
